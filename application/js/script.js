@@ -47,7 +47,7 @@ function createPatientDetails(result) {
 
   var str ='';
   for (var i = 0; i < result.length; i++) {
-      if(result[i] === "Heart Rate Sensor")
+      if(result[i] === "HeartRateSensor")
       {
         str += '<button id='+ result[i] + ' onclick = drawSensorGraph()> ' + result[i] +'</button></td>';
       }
@@ -64,48 +64,6 @@ function createPatientDetails(result) {
 
 }
 
-function getData(data,totalPoints) {
-
-      if (data.length > 0)
-        data = data.slice(1);
-
-      // Do a random walk
-
-      while (data.length < totalPoints) {
-
-        var prev = data.length > 0 ? data[data.length - 1] : 50,
-          y = prev + Math.random() * 10 - 5;
-
-        if (y < 0) {
-          y = 0;
-        } else if (y > 100) {
-          y = 100;
-        }
-
-        data.push(y);
-      }
-
-      // Zip the generated y values with the x values
-
-      var res = [];
-      for (var i = 0; i < data.length; ++i) {
-        res.push([i, data[i]])
-      }
-
-      return res;
-
-}
-
-function update(data,totalPoints,updateInterval) {
-
-      plot.setData([getData(data,totalPoints)]);
-
-      // Since the axes don't change, we don't need to call plot.setupGrid()
-
-      plot.draw();
-      setTimeout(update(data,totalPoints,updateInterval), updateInterval);
-      
-}
 
 function submitForm() {
 
@@ -166,26 +124,118 @@ function loadPatientDetails() {
 
 }
 
-function drawSensorGraph() {
-
-  var data = [],
-    totalPoints = 100;
-  var updateInterval = 30;
   
+function drawSensorGraph() {
+  
+  var data = [],
+      totalPoints = 300;
 
-  var plot = $.plot("#placeholder", [ getData(data,totalPoints) ], {
-    series: {
-      shadowSize: 0 // Drawing is faster without shadows
-    },
-    yaxis: {
-      min: 0,
-      max: 100
-    },
-    xaxis: {
-      show: false
+  var username = localStorage.getItem("username");
+  var password = localStorage.getItem("password");
+  var start = '';
+  var end = '';
+  var article = '40';
+  var taxonomy = 'health-cardio-heartrate';
+  var y = '';
+
+    function getData() {
+
+      if (data.length > 0)
+        data = data.slice(1);
+
+      // Do a random walk
+
+      while (data.length < totalPoints) {
+
+        $.post("http://comp2013.hyperspacedesign.co.uk/api/data/index.php" ,
+        {
+          start : start,
+          end  : end,
+          username : username,
+          password : password,
+          article : article,
+          taxonomy : taxonomy
+        },
+        function(data_rec)
+        {
+          var readValues = data_rec.split('/');
+          y = readValues[0];
+      
+        });
+
+        data.push(y);
+      }
+
+      // Zip the generated y values with the x values
+
+      var res = [];
+      for (var i = 0; i < data.length; ++i) {
+        res.push([i, data[i]])
+      }
+
+      return res;
     }
+
+    // Set up the control widget
+
+    var updateInterval = 6000;
+    
+
+    var plot = $.plot("#placeholder", [ getData() ], {
+      series: {
+        shadowSize: 0 // Drawing is faster without shadows
+      },
+      yaxis: {
+        min: 0,
+        max: 200
+      },
+      xaxis: {
+        show: false
+      }
+    });
+
+    function update() {
+
+      plot.setData([getData()]);
+
+      // Since the axes don't change, we don't need to call plot.setupGrid()
+
+      plot.draw();
+      setTimeout(update, updateInterval);
+    }
+
+    update();
+
+
+  
+}
+
+/*function testRec() {
+
+  var username = localStorage.getItem("username");
+  var password = localStorage.getItem("password");
+  var start = '';
+  var end = '';
+  var article = '40';
+  var taxonomy = 'health-cardio-heartrate';
+
+
+  $.post("http://comp2013.hyperspacedesign.co.uk/api/data/index.php" ,
+  {
+    start : start,
+    end  : end,
+    username : username,
+    password : password,
+    article : article,
+    taxonomy : taxonomy
+  },
+  function(data_rec)
+  {
+    if(data_rec == 'null')
+      {addText(dataRecieve,'CAN NOT RECEIVE DATA');}
+    else{
+    addText(dataRecieve,data_rec);}
+
   });
 
-  update(data,totalPoints,updateInterval);
-
-}
+}*/
