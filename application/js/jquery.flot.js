@@ -239,7 +239,7 @@ Licensed under the MIT license.
 						bottom: 0,
 						right: 0,
 						'font-size': "smaller",
-						color: "#545454"
+						color: "#777"
 					})
 					.insertAfter(this.element);
 			}
@@ -498,12 +498,12 @@ Licensed under the MIT license.
         var series = [],
             options = {
                 // the color theme used for graphs
-                colors: ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"],
+                colors: ["#D00000", "#0000FF", "#cb4b4b", "#4da74d", "#9440ed"],
                 legend: {
                     show: true,
                     noColumns: 1, // number of colums in legend table
                     labelFormatter: null, // fn: string -> string
-                    labelBoxBorderColor: "#ccc", // border color for the little label boxes
+                    labelBoxBorderColor: "#444", // border color for the little label boxes
                     container: null, // container (as jQuery object) to put legend in, null means default on top of graph
                     position: "ne", // position of default legend container within plot
                     margin: 5, // distance from grid edge to default legend container within plot
@@ -546,13 +546,13 @@ Licensed under the MIT license.
                         radius: 3,
                         lineWidth: 2, // in pixels
                         fill: true,
-                        fillColor: "#ffffff",
+                        fillColor: "#444",
                         symbol: "circle" // or callback
                     },
                     lines: {
                         // we don't put in show: false so we can see
                         // whether lines were actively disabled
-                        lineWidth: 2, // in pixels
+                        lineWidth: 1.5, // in pixels
                         fill: false,
                         fillColor: null,
                         steps: false
@@ -561,7 +561,7 @@ Licensed under the MIT license.
                     },
                     bars: {
                         show: false,
-                        lineWidth: 2, // in pixels
+                        lineWidth:1 , // in pixels
                         barWidth: 1, // in units of the x axis
                         fill: true,
                         fillColor: null,
@@ -575,7 +575,7 @@ Licensed under the MIT license.
                 grid: {
                     show: true,
                     aboveData: false,
-                    color: "#545454", // primary color used for outline and labels
+                    color: "#999", // primary color used for outline and labels
                     backgroundColor: null, // null for transparent, else color
                     borderColor: null, // set if different from the grid color
                     tickColor: null, // color for the ticks, e.g. "rgba(0,0,0,0.15)"

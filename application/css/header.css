@@ -1,0 +1,28 @@
+
+header{
+	position: fixed;
+	width:100%;
+	left: 0;
+	top: 0;
+	background-color: #fff  ; 
+}
+
+header h1{
+	color: #777;
+	font-size: 2em;
+	text-align:center;
+    font-weight: normal;
+    
+}
+
+img{
+	height: 10%;
+	width:25%;
+	display: block;
+	margin: 0 auto;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+
+

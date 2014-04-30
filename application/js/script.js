@@ -1,241 +1,146 @@
-function addText(target,text) {
-
-    var myTarget = document.getElementById(target);
-    myTarget.innerText = text;
-
-} 
-
-function clickId(patient) {
-
-  localStorage.setItem("patientId", patient.id);
-  window.location = "patientDetails.html";
-
-}
+var authkey = localStorage.getItem("authkey");
+var username = localStorage.getItem("username");
+var article = localStorage.getItem("patientId");
 
 
-function createTable(result) {
+var plot;
 
-  var str = '<table><tr><td>ID</td><td>Name</td><td>Date of birth</td><td>Address</td></tr>';
-  for (var i = 0; i < result.length; i++) 
-  {
-    if(i%4 === 0){
-      if (result[i] === 'ID')
-        {
-          str += '<tr><td>'+ result[i] + '</td>';
-        }
-      else
-        {
-        str += '<tr><td>'+ '<button id='+ result[i] + ' onclick = clickId(this)> ' + result[i] +'</button></td>';
-        }
-    }
-    else{
-      if(i%4 === 3){
-        str += '<td>'+ result[i] + '</td></tr>';
-      }
-      else
-      {
-        str += '<td>'+ result[i] + '</td>';
-      }
+var graphSettings =  {
+
+    series: {
+    
+      shadowSize: 0
+      //bars:{show:true}
+    },
+   
+    xaxis: {
+      mode: "time",
+      timezone: "browser"
     }
   }
-  str += '</table>';
-  return str;
-
-}
-
-function createPatientDetails(result) {
-
-  var str ='';
-  for (var i = 0; i < result.length; i++) {
-      if(result[i] === "HeartRateSensor")
-      {
-        str += '<button id='+ result[i] + ' onclick = drawSensorGraph()> ' + result[i] +'</button></td>';
-      }
-      else
-      {
-      str += result[i];
-      }
-      if(i%2 === 1)
-      {
-        str += '<br>';
-      } 
-    }
-    return str;
-
-}
 
 
-function submitForm() {
+function getPrintData(storedData,end,totalPoints) {
+  var print = [];
 
-   $.post("http://comp2013.hyperspacedesign.co.uk/api/login/index.php" ,
-   {
-    username : $('#username').val(),
-    password : $('#password').val()
-  },
-  function(data)
+  if (storedData.length > totalPoints) 
   {
-    if( data == "LOGIN_SUCCESSFUL")
+    print = storedData.slice(end - totalPoints + 1, end + 1);
+  } 
+  else 
+  {
+    for(var i = 0; i < totalPoints - end - 1; i++)
     {
-      localStorage.setItem("username", $('#username').val());
-      localStorage.setItem("password", $('#password').val());
-      window.location = "patientList.html";
+      print.push(null);
+    }  
+    print = print.concat(storedData);
+  }
+
+  return print;
+}
+
+
+
+function unixTimeToDate(unixTime)
+{
+  var date = new Date(unixTime*1000);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = date.getFullYear();
+  var month = checkSingle(months[date.getMonth()]);
+  var date1 = checkSingle(date.getDate());
+  var hours = checkSingle(date.getHours());
+  var minutes = checkSingle(date.getMinutes());
+  var seconds = checkSingle(date.getSeconds());
+
+
+  var formattedTime = date1+','+month+' '+year+' '+hours+':'+minutes+':'+seconds ;
+  return formattedTime;
+}
+
+function checkSingle(character) {
+  if(character.toString().length == 1)
+  {
+    return "0" + character;
+  } 
+  else
+  {
+    return character;
+  }
+}
+
+function zipNewData(newData) {
+  var length = Object.keys(newData.data).length;
+  var newzip = [];
+
+  if (newData == null) {
+    return newzip;
+  }
+
+  for (var i = 0; i < length; i++) {
+    newzip = newzip.concat([[newData.data[i].reading_date*1000,newData.data[i].entryValues]]);
+  }
+
+  return newzip;
+}
+
+
+function fillInBlank(start,end,lastValue,newData) {
+  var copy = [];
+  var n = lastValue;
+  var k = 0;
+
+  //alert(start);
+
+  for (var i = 0; i < end - start + 1; i++) 
+  {
+    //  alert(newData);
+    if(newData != null)
+    {
+    if ((start + i)*1000 == newData[k][0]) 
+      {
+        n = newData[k][1];
+        k = k + 1;
+      }
     }
-    else
-    {
-      addText('responseText',data);
-    } 
+    copy.push([(start + i)*1000, n]);
+  }
+
+  return copy;
+}
+
+
+
+
+function setHello() {
+  var name = localStorage.getItem("name");
+  var hello = document.getElementById("hello");
+  hello.innerText = "WELCOME! "+name;
+}
+
+
+//set loading while waiting response
+$(document).ready(function(){
+  setHello();
+  $(document).ajaxStart(function(){
+    $("#load").css("display","block");
+    $("#load1").css("display","block");
+    $("#load2").css("display","block");
+    $("#load3").css("display","block");
+    $("#load4").css("display","block");
+  });
+  $(document).ajaxComplete(function(){
+    $("#load").css("display","none");
+    $("#load1").css("display","none");
+    $("#load2").css("display","none");
+    $("#load3").css("display","none");
+    $("#load4").css("display","none");
+  });
+  
+  $(document).ajaxStart(function(){
+  $(".throbber").css("display","block");
+  });
+  $(document).ajaxComplete(function(){
+  $(".throbber").css("display","none");
   });
 
-}
-
-function loadPatientList() {
-
-  var username = localStorage.getItem("username");
-  var password = localStorage.getItem("password");
-  
-  $.post("http://comp2013.hyperspacedesign.co.uk/api/articles/index.php" ,
-    {
-      username : username,
-      password : password
-    },
-    function(data)
-    {
-      var patientList = data.split('/');
-      var table = document.getElementById("responseTextA");
-      table.innerHTML = createTable(patientList);
-    });
-
-}
-
-function loadPatientDetails() {
-
-  var patientId = localStorage.getItem("patientId");
-
-  $.post("patientDetails.php" ,
-   {
-    userId : patientId
-  },
-  function(data)
-  {
-    var detail = data.split('/');
-    var patientDetails = document.getElementById("responseTextB");
-    patientDetails.innerHTML =  createPatientDetails(detail);
-  });
-
-}
-
-  
-function drawSensorGraph() {
-  
-  var data = [],
-      totalPoints = 300;
-
-  var username = localStorage.getItem("username");
-  var password = localStorage.getItem("password");
-  var start = '';
-  var end = '';
-  var article = '40';
-  var taxonomy = 'health-cardio-heartrate';
-  var y = '';
-
-    function getData() {
-
-      if (data.length > 0)
-        data = data.slice(1);
-
-      // Do a random walk
-
-      while (data.length < totalPoints) {
-
-        $.post("http://comp2013.hyperspacedesign.co.uk/api/data/index.php" ,
-        {
-          start : start,
-          end  : end,
-          username : username,
-          password : password,
-          article : article,
-          taxonomy : taxonomy
-        },
-        function(data_rec)
-        {
-          var readValues = data_rec.split('/');
-          y = readValues[0];
-      
-        });
-
-        data.push(y);
-      }
-
-      // Zip the generated y values with the x values
-
-      var res = [];
-      for (var i = 0; i < data.length; ++i) {
-        res.push([i, data[i]])
-      }
-
-      return res;
-    }
-
-    // Set up the control widget
-
-    var updateInterval = 6000;
-    
-
-    var plot = $.plot("#placeholder", [ getData() ], {
-      series: {
-        shadowSize: 0 // Drawing is faster without shadows
-      },
-      yaxis: {
-        min: 0,
-        max: 200
-      },
-      xaxis: {
-        show: false
-      }
-    });
-
-    function update() {
-
-      plot.setData([getData()]);
-
-      // Since the axes don't change, we don't need to call plot.setupGrid()
-
-      plot.draw();
-      setTimeout(update, updateInterval);
-    }
-
-    update();
-
-
-  
-}
-
-/*function testRec() {
-
-  var username = localStorage.getItem("username");
-  var password = localStorage.getItem("password");
-  var start = '';
-  var end = '';
-  var article = '40';
-  var taxonomy = 'health-cardio-heartrate';
-
-
-  $.post("http://comp2013.hyperspacedesign.co.uk/api/data/index.php" ,
-  {
-    start : start,
-    end  : end,
-    username : username,
-    password : password,
-    article : article,
-    taxonomy : taxonomy
-  },
-  function(data_rec)
-  {
-    if(data_rec == 'null')
-      {addText(dataRecieve,'CAN NOT RECEIVE DATA');}
-    else{
-    addText(dataRecieve,data_rec);}
-
-  });
-
-}*/
+});

@@ -2,13 +2,25 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<script type="text/javascript" src="/js/jquery-1.10.2.js"></script> 
-	<script type="text/javascript" src="/js/script.js" ></script>
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script> 
+	<script type="text/javascript" src="js/script.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/patient.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/table.css">
+	<link rel="stylesheet" type="text/css" href="css/patientList.css">
 	<title>Patient List</title>
 </head>
 
 <body onload="loadPatientList()">
-	<h>Patient List</h>
+	<header>
+	<img src="logo.jpg" alt="welcome">
+	<div id="hello"></div>
+	<a id="logout" href="#" onclick="logout();return false;">Log out</a>
+	<div style="display: block; clear: both;"></div>
+	</header>
+<div>
+	<div id='load' class="throbber">Loading...</div>
 	<div id='responseTextA'></div>
+</div>
 </body>
 </html>

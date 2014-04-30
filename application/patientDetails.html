@@ -2,22 +2,113 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<script type="text/javascript" src="/js/jquery-1.10.2.js"></script> 
-	<script type="text/javascript" src="/js/script.js" ></script>
-	<script type="text/javascript" src="/js/jquery.flot.js"></script>
-	<link href="/css/graph.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script> 
+	<script type="text/javascript" src="js/script.js" ></script>
+	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/patient.js" ></script>
+	<script type="text/javascript" src="js/graph1.js" ></script>
+	<script type="text/javascript" src="js/graph2.js" ></script>
+	<script type="text/javascript" src="js/graph3.js" ></script>
+	<script type="text/javascript" src="js/graph4.js" ></script>
+	<script type="text/javascript" src="js/jquery.flot.js"></script>
+	<script type="text/javascript" src="js/jquery.flot.time.js"></script>
+	<script type="text/javascript" src="js/jquery.flot.navigate.js"></script>
+	<link rel="stylesheet" href="http://css-spinners.com/css/spinner/heartbeat.css" type="text/css">
+	<link rel="stylesheet" href="http://css-spinners.com/css/spinner/throbber.css" type="text/css">
+	<link rel="stylesheet" type="text/css" href="css/graph.css">
+	<link rel="stylesheet" type="text/css" href="css/patientDetails.css">
 	<title>Patient Details</title>
 </head>
 
+<header>
+	<img src="logo.jpg" alt="welcome">
+	<div id="hello"></div>
+	<a id="logout" href="#" onclick="logout();return false;">Log out</a>
+	<a id="back" href="#" onclick="back();return false;">Back</a>
+	<div style="display: block; clear: both;"></div>
+</header>
 
-<body onload="loadPatientDetails()">
-	<div id='responseTextB'></div>
-	<div id="content">
+<body onload="loadPatientDetails()" >
+
+<div class="content">
+<div class="column" id='responseTextB'></div>
+
+<div  id="columnData">
+<div class="Data">
+	    <div id = "dataReceive1" ></div>
+		<div class="throbber">Loading...</div>
+		<h2>Heart Rate</h2>
+		<div id = "timeReceive1" ></div>
+		<div class="throbber">Loading...</div>
+		<div style="display: block; clear: both;"></div>
+</div>
+
+<div class="Data">
+       <div id = "dataReceive2" ></div>
+		<div class="throbber">Loading...</div>
+		<h2>ECG</h2>
+		<div id = "timeReceive2" ></div>
+		<div class="throbber">Loading...</div>
+		<div style="display: block; clear: both;"></div>
+</div>
+
+<div class="Data">
+		<div id = "dataReceive3" ></div>
+		<div class="throbber">Loading...</div>
+		<h2>General Activity</h2>
+		<div id = "timeReceive3" ></div>
+		<div class="throbber">Loading...</div>
+		<div style="display: block; clear: both;"></div>
+</div>
+
+<div class="Data">
+		<div id = "dataReceive4" ></div>
+		<div class="throbber">Loading...</div>
+		<h2>Blood Pressure</h2>
+		<div id = "timeReceive4" ></div>
+		<div class="throbber">Loading...</div>
+		<div style="display: block; clear: both;"></div>
+</div>
+<div style="display: block; clear: both;"></div>
+</div>
+
+</div>
+<div style="display: block; clear: both;"></div>
+<div class="demo-container">
+		<div id="placeholder1" class="demo-placeholder"></div>
+		<div id='load1' class="heartbeat">Loading...</div>
+		<button id="increase" onclick="increaseScope1()"> - </button>
+		<button id="decrease" onclick="decreaseScope1()"> + </button>
+		<button id="prevous" onclick="getPreData1()"> <- </button>
+		<button id="forward" onclick="getFwData1()"> -> </button>
+	</div>
 
 	<div class="demo-container">
-		<div id="placeholder" class="demo-placeholder"></div>
+		<div id="placeholder2" class="demo-placeholder"></div>
+		<div id='load2' class="heartbeat">Loading...</div>
+		<button id="increase" onclick="increaseScope2()"> - </button>
+	    <button id="decrease" onclick="decreaseScope2()"> + </button>
+	    <button id="prevous" onclick="getPreData2()"> <- </button>
+		<button id="forward" onclick="getFwData2()"> -> </button>
+	</div>
+<div style="display: block; clear: both;"></div>
+	<div class="demo-container2">
+		<div id="placeholder3" class="demo-placeholder"></div>
+		<div id='load3' class="heartbeat">Loading...</div>
+		<button id="increase" onclick="increaseScope3()"> - </button>
+		<button id="decrease" onclick="decreaseScope3()"> + </button>
+		<button id="prevous" onclick="getPreData3()"> <- </button>
+		<button id="forward" onclick="getFwData3()"> -> </button>
 	</div>
 
+	<div class="demo-container2">
+		<div id="placeholder4" class="demo-placeholder"></div>
+		<div id='load4' class="heartbeat">Loading...</div>
+		<button id="increase" onclick="increaseScope4()"> - </button>
+	    <button id="decrease" onclick="decreaseScope4()"> + </button>
+	    <button id="prevous" onclick="getPreData4()"> <- </button>
+		<button id="forward" onclick="getFwData4()"> -> </button>
 	</div>
+
 </body>
 </html>

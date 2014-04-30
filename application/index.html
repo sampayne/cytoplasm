@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script> 
+	<script type="text/javascript" src="js/script.js" ></script>
+	<script type="text/javascript" src="js/sha512.js" ></script>
+	<script type="text/javascript" src="js/login.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/loginForm.css">
+	<link rel="stylesheet" type="text/css" href="css/header.css">
+	<link ref="stylesheet" type="text/css" href="css/animate.css">
+	<title>Login Page</title>
+</head>
+
+<body>
+	<form>
+		
+	 <header>
+	 	
+		<img src="logo.jpg" alt="welcome">
+		
+	</header>
+
+	</form>
+
+	<div id="container">
+		
+		<form name="subForm" id="subForm" onsubmit="submitForm(); return false;">
+		
+		<label for="name">Username:</label>
+		
+		<input type="name" id="username" placeholder="username" required />
+		
+		<label for="username">Password:</label>
+
+		<input type="password" id="password" placeholder="password" required/>
+		
+		<div id="lower">
+		
+		<input type="submit" value="login"/>
+		
+		</div>
+		
+		</form>
+		
+		<div  id="responseText"></div>
+
+	</div>
+
+</body>
+</html>
