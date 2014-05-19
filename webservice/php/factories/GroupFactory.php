@@ -3,21 +3,94 @@
 abstract class GroupFactory extends ModelFactory
 {
 
-    public static function Create($group)
-        {}
+    public static function Create($name = NULL, $super = -1, $additional_fields = NULL, $creator = NULL)
+        {
+            $errors = array();
+            
+            if(count($errors)){
+                
+                return $errors;
+                  
+            }else{
+            
+                $sqlString = 'INSERT INTO cyGroup (name,super,additional) VALUES (?,?,?)';
+                $params = array($name,$super, $additional_fields);
+                DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString,$params);
+                $id = DatabaseFactory::getFactory()->getDatabase()->lastID();
+                
+                if($super < 1){
+                    
+                    $sqlString = 'INSERT INTO cyGroupUser (groupID, userID) VALUES (?,?); INSERT INTO cyGroupAdmin (groupID, userID) VALUES (?,?)';
+                    $params = array($id, $creator,$id,$creator);
+                    DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString,$params);
+                }
+            
+            }
+        }
 
 
-    public static function Edit($group)
-        {}
+    public static function Edit($id, $name = NULL, $super = -1, $additional_fields = NULL, $creator = NULL, $oldSuper = -1)
+        {
+            
+             $errors = array();
+            
+            if($id < 1){
+                
+                array_push($errors, 'Group Does Not Exist');
+                
+            }
+            
+            if(count($errors)){
+                
+                return $errors;
+                
+                
+            }else{
+            
+                $sqlString = 'UPDATE cyGroup SET name = ?, super = ?, additional= ? WHERE id = ?';
+                $params = array($name,$super, $additional_fields, $id);
+                DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString,$params);
+                
+                if($super < 1 && $oldSuper > 0){
+                    
+                    $sqlString = 'INSERT INTO cyGroupUser (groupID, userID) VALUES (?,?); INSERT INTO cyGroupAdmin (groupID, userID) VALUES (?,?)';
+                    $params = array($id, $creator,$id,$creator);
+                    DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString,$params);
+                }
+            
+            }
+            
+            
+        }
 
 
     public static function Delete($id)
         {
+            //Load group and subgroups and then delete all subgroups
             
+            $sqlString = 'SELECT id FROM cyGroup WHERE super = ?';
+            $results = DatabaseFactory::getFactory()->getDatabase()->Query($sqlString,array($id)); 
             
+            foreach($results as $result){
                 
+                GroupFactory::Delete($result['id']);
+                
+            }
             
+            $sqlString = 'SELECT articleID FROM cyGroupCreator WHERE groupID = ?';
+            $results = DatabaseFactory::getFactory()->getDatabase()->Query($sqlString,array($id)); 
+            foreach($results as $result){
+                
+                ArticleFactory::Delete($result['articleID']);
+                
+            }
             
+            $sqlString = 'DELETE FROM cyGroup WHERE id = ?; 
+                          DELETE FROM cyGroupUser WHERE groupID = ?;
+                          DELETE FROM cyGroupAdmin WHERE groupID = ?';
+                          
+            $params = array($id,$id,$id);
+            DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString,$params); 
             
         }
 
@@ -62,8 +135,20 @@ abstract class GroupFactory extends ModelFactory
         }
 
 
-    public static function LoadWithValues()
-        {}
+    public static function LoadWithValues($id, $name = NULL, $super = -1, $additional_fields = NULL)
+        {
+            
+            $group = new Group();
+            
+            $group->setID($id);
+            $group->setName($name);
+            $group->setAdditional($additional_fields);
+            $superGroup = GroupFactory::LoadWithID($super);
+            $group->setSuper($superGroup);
+            
+            return $group;  
+            
+        }
 
 
         public static function LoadAdminGroupsForUser($user,$idsOnly = 0 ){
@@ -89,7 +174,7 @@ abstract class GroupFactory extends ModelFactory
         ($results as $result)
         {
 
-            $group = GroupFactory::LoadWithSQLRow($result);
+            $group = GroupFactory::LoadWithID($result['groupID']);
             array_push($groups, $group);
             $groups = array_merge($groups, GroupFactory::FindSubgroupsOfGroup($group, $idsOnly));
 

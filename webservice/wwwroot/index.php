@@ -7,11 +7,8 @@
 <?php
 
 require $_SERVER['DOCUMENT_ROOT'].'/api/include.php';
+require $_SERVER['DOCUMENT_ROOT'].'/api/checkLogin.php';
 
-session_start();
-if (!isset($_SESSION['userID'])) {
-    session_destroy();
-}
 ?>
 <!DOCTYPE html>
 <html>

@@ -45,6 +45,14 @@ class Article extends Model
     }
     public function userCreator(){
     
+        if(!isset($this->groupCreator) && !isset($this->userCreator)){
+        
+        $this->loadCreator();
+    }
+    
+    
+
+    
     return $this->userCreator;
     
     }
@@ -68,7 +76,8 @@ class Article extends Model
                 $this->additional_fields = isset($SQLRow['additional_fields'])? $SQLRow['additional_fields'] : NULL;
                 $this->groupCreator      = isset($SQLRow['groupID'])? GroupFactory::LoadWithID($SQLRow['groupID'],0) : NULL;
                 $this->userCreator       = isset($SQLRow['userID'])? UserFactory::LoadWithID($SQLRow['userID'],0) : NULL;
-                
+                    
+    
     }
     
     public function SQLFields(){
@@ -86,11 +95,19 @@ class Article extends Model
     }
 
     //Model Behaviour
-    private function loadCreator()
+    public function loadCreator()
     {
         
         $this->userCreator  = ArticleFactory::LoadUserCreatorOfArticle($this);
         $this->groupCreator = ArticleFactory::LoadGroupCreatorOfArticle($this);
+        
+        if(is_null($this->userCreator) && is_null($this->groupCreator)){
+            
+            
+            echo 'ERRORRORROROROROROROROROROROROROROROROOR';
+            
+            
+        }
         
     }
     

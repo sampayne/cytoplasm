@@ -2,9 +2,8 @@
     
     abstract class DataEntryFactory extends ModelFactory{
             
-                public static function Create($dataentry){
+                public static function Create($values = NULL, $sensorID = NULL, $transmitterID = NULL, $readingdate = NULL, $hidden = 0, $userID = NULL, $taxonomy = NULL, $article = NULL){
 
-                    
                     $sqlString = 'INSERT INTO cyEntry (entryValues, sensorID, transmitterID, reading_date, hidden, userID, taxonomyID) VALUES (?,?,?,?,?,?,?)';
                     $params = array($values,$sensorID, $transmitterID, $readingdate,$hidden, $userID, $taxonomy);
                     DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString,$params);
@@ -13,22 +12,53 @@
                     if(substr($article, 0, 1) == 'u'){
                         
                         $sqlString ='INSERT INTO cyUserEntry (userID, entryID) VALUES (?,?)';
-
-                        
+  
                     }elseif(substr($article, 0, 1) == 'a'){
                         
                         $sqlString ='INSERT INTO cyArticleEntry (articleID, entryID) VALUES (?,?)';
-                        
+                            
                     }
                     
                     $params = array(substr($article, 1), $id);
                     
                     DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString, $params);
-                    
+                                        
                 }
                 
-                public static function Edit($dataentry){}
-                public static function Delete($id){}
+            public static function Edit($id, $values = NULL, $sensorID = NULL, $transmitterID = NULL, $readingdate = NULL, $hidden = NULL, $userID = NULL, $taxonomy = NULL, $article = NULL){
+                    
+                    $sqlString = 'UPDATE cyEntry SET entryValues = ?, sensorID = ?, transmitterID = ?, reading_date = ?, hidden = ?, userID = ?, taxonomyID = ? WHERE id = ?';
+                    $params = array($values,$sensorID, $transmitterID, $readingdate,$hidden, $userID, $taxonomy,$id);
+                    DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString,$params);
+                     
+                    if(substr($article, 0, 1) == 'u'){
+                        
+                        $sqlString ='UPDATE cyUserEntry SET userID = ? WHERE entryID = ?';
+  
+                    }elseif(substr($article, 0, 1) == 'a'){
+                        
+                        $sqlString ='UPDATE cyArticleEntry SET articleID = ? WHERE entryID = ?';
+                            
+                    }
+                    
+                    $params = array(substr($article, 1), $id);
+                    
+                    DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString, $params);
+
+                    
+                    
+                }
+                public static function Delete($id){
+                    
+                    
+                    $sqlString = 'DELETE FROM cyEntry WHERE id = ?; 
+                                  DELETE FROM cyArticleEntry WHERE entryID = ?;
+                                  DELETE FROM cyUserEntry WHERE entryID = ?';
+                                
+                    $params = array($id,$id,$id);
+                    DatabaseFactory::getFactory()->getDatabase()->Insert($sqlString,$params);
+                    
+                }
                 
                 public static function LoadWithID($id, $idsOnly = NULL){
                     

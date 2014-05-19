@@ -5,7 +5,7 @@ abstract class TaxonomyFactory extends ModelFactory
 
     
 
-    public static function Create($taxonomy)
+    public static function Create()
         {
      
                  
@@ -67,6 +67,24 @@ abstract class TaxonomyFactory extends ModelFactory
 
     }
 
+
+    public static function GetAllTaxonomies(){
+        
+        $sqlString = 'SELECT * FROM cyTaxonomy';
+        $results    = DatabaseFactory::getFactory()->getDatabase()->Query($sqlString);
+        $taxonomies = array();
+         
+        foreach($results as $result){
+        
+            $taxonomy = new Taxonomy();
+            $taxonomy->initWithSQLRow($result);
+            array_push($taxonomies, $taxonomy);
+    
+        }
+    
+        return $taxonomies;
+        
+    }
     
     public static function LoadWithName($taxonomyName)
     {

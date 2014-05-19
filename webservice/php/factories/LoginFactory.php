@@ -9,7 +9,7 @@
                         
                         $auth = NULL;
                         
-                    if(isset($result[0]['authkey'])){
+                    if(isset($result[0]['authkey']) && $result[0]['authkey'] != ''){
                         
                         $auth = $result[0]['authkey'];
                         

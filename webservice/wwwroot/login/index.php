@@ -4,20 +4,19 @@ require($_SERVER['DOCUMENT_ROOT'].'/api/include.php');
 if(isset($_POST['commit'])){
 
     session_start();
+    session_unset();
     session_destroy();
-    session_start();
 
     $password = hash('sha512', $_POST['password']);
 
-	$user =  LoginFactory::login($_POST['username'],$password);
+	$CURRENT_USER =  LoginFactory::login($_POST['username'],$password);
         
-	if(!isset($user->error)){
+	if(!isset($CURRENT_USER->error)){
        
         session_start();
-		$_SESSION['user'] = serialize($user);
-		header('Location: /dashboard');	
-		
-
+		$_SESSION['user'] = serialize($CURRENT_USER);
+		header('Location: /dashboard/');	
+        die();
 	}
 
 }
@@ -33,7 +32,13 @@ if(isset($_POST['commit'])){
 <?php require($_SERVER['DOCUMENT_ROOT'].'/defaults/header/header.php');?>
 
 <div class="page">
+            <h1>Login</h1>
+
 <section>
+
+<?php if(isset($CURRENT_USER->error)):?>
+<p class="error"> <?php echo $CURRENT_USER->error?> </p>
+<?php endif ?>
 <form name="login" action="/login/" method="post">
     <input type="hidden" name="commit" value="1">
    <input type="text" name="username" placeholder="Username...">

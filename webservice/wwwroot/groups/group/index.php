@@ -25,7 +25,7 @@ $group = GroupFactory::LoadWithID($_GET['group'],0);
 
         <div class="page">
         <h1><?php echo $group->fullName() ?></h1>
-            <section>
+            <section class="column_2">
                 <h2>Articles</h2>
                 
                 
@@ -38,11 +38,16 @@ $group = GroupFactory::LoadWithID($_GET['group'],0);
                         <?php echo $article->name()?> | <a href="/articles/article/?article=<?php echo $article->id()?>">View</a>
                     </li>
                <?php endforeach ?>
+               
+               <?php else:?>
+                <p>This group has no articles.</p>
+               
+               
                  <?php endif ?>
                 </ul>
              </section>
             
-            <section>
+            <section class="column_2">
                 <h2>Sub Groups</h2>
                 
                 
@@ -66,13 +71,11 @@ $group = GroupFactory::LoadWithID($_GET['group'],0);
 
              </section>
              
-             <section>
+             <section class="column_2">
              <h2>Supergroup</h2>
              
              <?php if(is_null($group->super())):?>
-             
-             
-                    <p>This is the root group.</p>
+             <p>This is the root group.</p>
              
              <?php else:?>
               <p><?php echo  $group->super()->fullName()?> | <a href="?group=<?php echo $group->super()->id()?>">View</a></p>

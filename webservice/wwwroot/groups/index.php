@@ -12,7 +12,9 @@ $groups = GroupFactory::LoadAllGroups();
 <!DOCTYPE html>
 <html>
     <head>
-	   <?php include($_SERVER['DOCUMENT_ROOT'].'/defaults/head.php');?>    </head>
+	   <?php include($_SERVER['DOCUMENT_ROOT'].'/defaults/head.php');?>   
+       <title>Groups | Cytoplasm</title>
+    </head>
     <body>
         <?php include($_SERVER['DOCUMENT_ROOT'].'/defaults/header/header.php');?>
 

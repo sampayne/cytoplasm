@@ -46,23 +46,23 @@
                $this->passoword = $password;
           }
           //Additional Getters
-          public function userArticles($idsOnly = 1) {
+          public function userArticles($idsOnly = 0) {
                $this->checkUserArticles($idsOnly);
                return $this->userArticles;
           }
-          public function groupArticles($idsOnly = 1) {
+          public function groupArticles($idsOnly = 0) {
                $this->checkGroupArticles($idsOnly);
                return $this->groupArticles;
           }
-          public function adminArticles($idsOnly = 1) {
+          public function adminArticles($idsOnly = 0) {
                $this->checkAdminArticles($idsOnly);
                return $this->adminArticles;
           }
-          public function groups($idsOnly = 1) {
+          public function groups($idsOnly = 0) {
                $this->checkGroups($idsOnly);
                return $this->groups;
           }
-          public function adminGroups($idsOnly = 1) {
+          public function adminGroups($idsOnly = 0) {
                $this->checkAdminGroups($idsOnly);
                return $this->adminGroups;
           }
@@ -90,7 +90,7 @@
                $this->authkey       = isset($SQLRow['authkey']) ? $SQLRow['authkey'] : NULL;
                $this->signature     = isset($SQLRow['signature']) ? $SQLRow['signature'] : NULL;
                $this->creation_date = isset($SQLRow['creation_date']) ? $SQLRow['creation_date'] : NULL;
-               $this->password      = isset($SQLRow['password']) ? $SQLRow['password '] : NULL;
+               $this->password      = isset($SQLRow['password']) ? $SQLRow['password'] : NULL;
           }
           public function SQLFields() {
                return array(
@@ -156,27 +156,27 @@
           private function loadAdminGroups($idsOnly = 0) {
                $this->adminGroups = GroupFactory::LoadAdminGroupsForUser($this, $idsOnly);
           }
-          private function checkAdminArticles($idsOnly = 1) {
+          private function checkAdminArticles($idsOnly = 0) {
                if (!isset($this->adminArticles)) {
                     $this->loadAdminArticles($idsOnly);
                }
           }
-          private function checkGroupArticles($idsOnly = 1) {
+          private function checkGroupArticles($idsOnly = 0) {
                if (!isset($this->groupArticles)) {
                     $this->loadGroupArticles($idsOnly);
                }
           }
-          private function checkUserArticles($idsOnly = 1) {
+          private function checkUserArticles($idsOnly = 0) {
                if (!isset($this->userArticles)) {
                     $this->loadUserArticles($idsOnly);
                }
           }
-          private function checkGroups($idsOnly = 1) {
+          private function checkGroups($idsOnly = 0) {
                if (!isset($this->groups)) {
                     $this->loadGroups($idsOnly);
                }
           }
-          private function checkAdminGroups($idsOnly = 1) {
+          private function checkAdminGroups($idsOnly = 0) {
                if (!isset($this->adminGroups)) {
                     $this->loadAdminGroups($idsOnly);
                }

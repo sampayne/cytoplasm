@@ -33,6 +33,7 @@
         
         public function setName($name){$this->name = $name;}
         public function setSuper($super){$this->super = $super;}
+        public function setAdditional($additional){$this->additional = $additional;}
         public function setSubgroups($subgroups){$this->subgroups = $subgroups;}
         public function setArticles($articles){$this->articles = $articles;}
         

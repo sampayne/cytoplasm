@@ -1,8 +1,5 @@
 <?php
 
-//enforceHTTPS();
-
-
 session_start();
 
 $CURRENT_USER = NULL;
@@ -14,16 +11,18 @@ if
 
 
     $CURRENT_USER  = unserialize($_SESSION['user']);
+
+    $response = LoginFactory::validateLogin($CURRENT_USER->authkey(), $CURRENT_USER->username());
     
-    $response = LoginFactory::validateLogin($user->authkey(), $user->username());
-    
-    $_SESSION['user'] = serialize($CURRENT_USER );
+    $_SESSION['user'] = serialize($CURRENT_USER);
     $PUBLIC = 0;
     if
     (isset($response->error))
-    {   $PUBLIC = 1;
+    {   
+    
+        $PUBLIC = 1;
         session_destroy();
-        
+                
     }else{
         
         $PUBLIC = 0;
@@ -33,7 +32,8 @@ if
     
 
 }else
-{   $PUBLIC = 1;
+{   
+    $PUBLIC = 1;
     session_destroy();
     
 }

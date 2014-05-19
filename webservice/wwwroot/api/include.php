@@ -37,6 +37,12 @@ function configure()
 {
     date_default_timezone_set('Europe/London');
     error_reporting(-1);
+  
+    ini_set('session.cookie_httponly', '0');
+    ini_set('session.use_only_cookies', '0');
+    ini_set('session.cookie_secure', '0');
+ 
+
 
     
 }
